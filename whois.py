@@ -28,7 +28,7 @@ DB_PATH = os.path.expanduser('~/.hoshino/poke_whois_winning_counter.db')
 BLACKLIST_ID = [1072, 1908, 4031, 9000]
 
 FILE_PATH = os.path.dirname(__file__)
-FONTS_PATH = os.path.join(FILE_PATH,'fonts')
+FONTS_PATH = os.path.join(FILE_PATH,'font')
 FONTS_PATH = os.path.join(FONTS_PATH,'sakura.ttf')
 
 class WinnerJudger:
