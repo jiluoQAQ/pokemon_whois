@@ -1,22 +1,12 @@
 import os
-import re
-
-
 import requests
 from io import BytesIO
 import base64
-
-
 from os import path
-
 import random
 from hoshino import Service
 from hoshino.typing import CQEvent
-
-
 import asyncio, sqlite3
-
-
 from . import chara
 from  PIL  import   Image,ImageFont,ImageDraw
 from . import poke_data
@@ -245,7 +235,6 @@ async def on_input_chara_name(bot, ev: CQEvent):
     try:
         if winner_judger.get_on_off_status(ev.group_id):
             gid = ev.group_id
-            uid = ev.user_id
             s = ev.message.extract_plain_text()
             cid = chara.name2id(s)
             if cid != chara.UNKNOWN and cid == winner_judger.get_correct_chara_id(ev.group_id) and winner_judger.get_winner(ev.group_id) == '':
@@ -259,9 +248,7 @@ async def on_input_chara_name(bot, ev: CQEvent):
                 
                 
                 cid_win = winner_judger.get_correct_chara_id(ev.group_id)
-                c = chara.fromid(cid_win)
                 poke_list = poke_data.CHARA_NAME
-                enname = poke_list[cid_win][1]
                 win_mes = winner_judger.get_correct_win_pic(gid)
                 
                 msg =  f'正确答案是:{win_mes}\n{msg_part}'
