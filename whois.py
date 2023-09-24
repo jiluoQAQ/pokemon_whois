@@ -1,22 +1,22 @@
 import os
 import re
-import io
-import json
+
+
 import requests
 from io import BytesIO
 import base64
-from collections import OrderedDict
-import aiohttp
+
+
 from os import path
-import math
+
 import random
 from hoshino import Service
-from hoshino.typing import CQEvent, MessageSegment
-from hoshino.util import pic2b64
-from hoshino import aiorequests
+from hoshino.typing import CQEvent
+
+
 import asyncio, sqlite3
-from numpy import zeros, uint8, ones
-from random import choice
+
+
 from . import chara
 from  PIL  import   Image,ImageFont,ImageDraw
 from . import poke_data
