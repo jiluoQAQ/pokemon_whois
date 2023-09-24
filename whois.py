@@ -93,7 +93,9 @@ class WinningCounter:
 
     def _get_winning_number(self, gid, uid):
         try:
-            r = self._connect().execute("SELECT COUNT FROM WINNINGCOUNTER WHERE GID=? AND UID=?",(gid,uid)).fetchone()        
+            r = self._connect().execute(
+                "SELECT COUNT FROM WINNINGCOUNTER WHERE GID=? AND UID=?",(gid,uid)
+            ).fetchone()        
             return 0 if r is None else r[0]
         except:
             raise Exception('查找表发生错误')
@@ -245,10 +247,6 @@ async def on_input_chara_name(bot, ev: CQEvent):
                 user_card_dict = await get_user_card_dict(bot, ev.group_id)
                 user_card = uid2card(ev.user_id, user_card_dict)
                 msg_part = f'{user_card}猜对了，真厉害！TA已经猜对{winning_count}次了~\n'
-                
-                
-                cid_win = winner_judger.get_correct_chara_id(ev.group_id)
-                poke_list = poke_data.CHARA_NAME
                 win_mes = winner_judger.get_correct_win_pic(gid)
                 
                 msg =  f'正确答案是:{win_mes}\n{msg_part}'
