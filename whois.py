@@ -25,10 +25,9 @@ PIC_SIDE_LENGTH = 25
 LH_SIDE_LENGTH = 75
 ONE_TURN_TIME = 20
 DB_PATH = os.path.expanduser('~/.hoshino/poke_whois_winning_counter.db')
-BLACKLIST_ID = [1072, 1908, 4031, 9000]
 
 FILE_PATH = os.path.dirname(__file__)
-FONTS_PATH = os.path.join(FILE_PATH,'font')
+FONTS_PATH = os.path.join(FILE_PATH,'fonts')
 FONTS_PATH = os.path.join(FONTS_PATH,'sakura.ttf')
 
 class WinnerJudger:
@@ -36,6 +35,7 @@ class WinnerJudger:
         self.on = {}
         self.winner = {}
         self.correct_chara_id = {}
+        self.correct_win_pic = {}
     
     def record_winner(self, gid, uid):
         self.winner[gid] = str(uid)
@@ -45,6 +45,12 @@ class WinnerJudger:
         
     def get_on_off_status(self, gid):
         return self.on[gid] if self.on.get(gid) is not None else False
+    
+    def set_correct_win_pic(self, gid, pic):
+        self.correct_win_pic[gid] = pic
+        
+    def get_correct_win_pic(self, gid):
+        return self.correct_win_pic[gid]
     
     def set_correct_chara_id(self, gid, cid):
         self.correct_chara_id[gid] = cid
@@ -105,7 +111,7 @@ class WinningCounter:
 def get_pic(address):
     return requests.get(address,timeout=20).content
 
-def get_win_pic(name,enname):
+def get_win_pic(name, enname):
     picfile = path.join(path.dirname(__file__), 'icon', f'{name}.png')
     im = Image.new("RGB", (640, 464), (255, 255, 255))
     base_img = os.path.join(FILE_PATH, "whois_bg.jpg")
@@ -160,16 +166,14 @@ async def whois_poke(bot, ev: CQEvent):
         winner_judger.turn_on(ev.group_id)
         chara_id_list = list(poke_data.CHARA_NAME.keys())
         poke_list = poke_data.CHARA_NAME
-        while True:
-            random.shuffle(chara_id_list)
-            if chara_id_list[0] not in BLACKLIST_ID: break
+        random.shuffle(chara_id_list)
         winner_judger.set_correct_chara_id(ev.group_id, chara_id_list[0])
         #print(chara_id_list[0])
         
         c = chara.fromid(chara_id_list[0])
         enname = poke_list[chara_id_list[0]][1]
         win_mes = get_win_pic(c.name,enname)
-        
+        winner_judger.set_correct_win_pic(ev.group_id, win_mes)
         picfile = path.join(path.dirname(__file__), 'icon', f'{c.name}.png')
         #print(c.name)
         im = Image.new("RGB", (640, 464), (255, 255, 255))
@@ -258,7 +262,7 @@ async def on_input_chara_name(bot, ev: CQEvent):
                 c = chara.fromid(cid_win)
                 poke_list = poke_data.CHARA_NAME
                 enname = poke_list[cid_win][1]
-                win_mes = get_win_pic(c.name,enname)
+                win_mes = winner_judger.get_correct_win_pic(gid)
                 
                 msg =  f'正确答案是:{win_mes}\n{msg_part}'
                 await bot.send(ev, msg)
